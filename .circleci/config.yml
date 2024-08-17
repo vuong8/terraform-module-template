@@ -52,13 +52,6 @@ jobs:
       - image: circleci/python:3.8
     steps:
       - checkout
-      # - run:
-      #     name: Install GitHub CLI
-      #     command: |
-      #       curl -sL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo apt-key add -
-      #       sudo apt-add-repository https://cli.github.com/packages
-      #       sudo apt-get update
-      #       sudo apt-get install gh
       - run:
           name: Create Git Release
           command: |
@@ -67,7 +60,7 @@ jobs:
             REPO="vuong8/terraform-module-template"  # Replace with your GitHub repository
             TAG="v$(date +%Y%m%d%H%M%S)"
             COMMIT_MESSAGE=$(git log -1 --pretty=%B)
-            RELEASE_NAME="Release $(date +%Y-%m-%d)"
+            RELEASE_NAME="Release $(date +%Y-%m-%d) $CIRCLE_SHA1"
             RELEASE_BODY="Release notes for $(date +%Y-%m-%d) \n $COMMIT_MESSAGE"
 
             # Create the release via GitHub API
@@ -88,20 +81,8 @@ jobs:
           command: |
             curl -H "Authorization: token $GH_TOKEN" \
               -H "Accept: application/vnd.github.v3+json" \
-              https://api.github.com/repos/your-username/your-repo/releases/tags/$TAG
-      # - run:
-      #     name: Create Git Release
-      #     command: |
-      #       echo "Creating a release"
-      #       gh auth login --with-token
-      #       COMMIT_MESSAGE=$(git log -1 --pretty=%B)
-      #       gh release create v$(date +%Y%m%d%H%M%S) --title "[Release $(date +%Y-%m-%d)] $COMMIT_MESSAGE" --notes "Release notes for $(date +%Y-%m-%d)"
-      #     environment:
-      #       GH_TOKEN: $GH_TOKEN
-      # - run:
-      #     name: Verify Release
-      # #     command: |
-      #       gh release view v$(date +%Y%m%d%H%M%S)
+              https://api.github.com/repos/$REPO/releases/tags/$TAG
+
 
 # Orchestrate jobs using workflows
 # See: https://circleci.com/docs/workflows/ & https://circleci.com/docs/configuration-reference/#workflows
