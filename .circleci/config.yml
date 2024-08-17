@@ -83,8 +83,6 @@ jobs:
               "prerelease": false
             }
             EOF
-          environment:
-            GH_TOKEN: $GH_TOKEN
       - run:
           name: Verify Release
           command: |
