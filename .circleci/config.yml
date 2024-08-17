@@ -47,6 +47,44 @@ jobs:
           name: "Print an env var stored in a Context"
           command: echo ${CONTEXT_ENV_VAR}
 
+  get_version_and_commit_message:
+    docker:
+      - image: circleci/python:3.8
+    steps:
+      - checkout
+      - run:
+          name: Get Latest Version Tag
+          command: |
+            LATEST_TAG=$(git describe --tags --abbrev=0)
+            echo "Latest tag: $LATEST_TAG"
+            echo "LATEST_TAG=$LATEST_TAG" >> $BASH_ENV
+      - run:
+          name: Get Latest Commit Message
+          command: |
+            COMMIT_MESSAGE=$(git log -1 --pretty=%B)
+            echo "Latest commit message: $COMMIT_MESSAGE"
+            echo "COMMIT_MESSAGE=$COMMIT_MESSAGE" >> $BASH_ENV
+      - run:
+          name: Create GitHub Release
+          command: |
+            # Get the latest version and increment based on commit message
+            LATEST_TAG=$(echo $LATEST_TAG | sed 's/^v//')
+            IFS='.' read -r MAJOR MINOR PATCH <<< "$LATEST_TAG"
+
+            if echo "$COMMIT_MESSAGE" | grep -q "\[MAJOR\]"; then
+              MAJOR=$((MAJOR + 1))
+              MINOR=0
+              PATCH=0
+            elif echo "$COMMIT_MESSAGE" | grep -q "\[MINOR\]"; then
+              MINOR=$((MINOR + 1))
+              PATCH=0
+            else
+              PATCH=$((PATCH + 1))
+            fi
+
+            NEW_VERSION="v$MAJOR.$MINOR.$PATCH"
+            echo "NEW_VERSION=$NEW_VERSION" >> $BASH_ENV
+
   create_release:
     docker:
       - image: circleci/python:3.8
@@ -57,8 +95,8 @@ jobs:
           command: |
             echo "Creating a release"
             # Define variables
-            REPO="vuong8/terraform-module-template"  # Replace with your GitHub repository
-            TAG="v$(date +%Y%m%d%H%M%S)"
+            REPO="vuong8/terraform-module-template"
+
             COMMIT_MESSAGE=$(git log -1 --pretty=%B)
             RELEASE_NAME="Release $(date +%Y-%m-%d) $CIRCLE_SHA1"
             RELEASE_BODY="Release notes for $(date +%Y-%m-%d) \n $COMMIT_MESSAGE"
@@ -69,7 +107,7 @@ jobs:
               -H "Accept: application/vnd.github.v3+json" \
               -d @- https://api.github.com/repos/$REPO/releases \<<EOF
             {
-              "tag_name": "$TAG",
+              "tag_name": "$NEW_VERSION",
               "name": "$RELEASE_NAME",
               "body": "$RELEASE_BODY",
               "draft": false,
