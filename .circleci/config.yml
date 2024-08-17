@@ -74,7 +74,7 @@ jobs:
             curl -X POST \
               -H "Authorization: token $GH_TOKEN" \
               -H "Accept: application/vnd.github.v3+json" \
-              -d @- https://api.github.com/repos/$REPO/releases <<EOF
+              -d @- https://api.github.com/repos/$REPO/releases \<<EOF
             {
               "tag_name": "$TAG",
               "name": "$RELEASE_NAME",
