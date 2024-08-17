@@ -62,7 +62,8 @@ jobs:
           command: |
             echo "Creating a release"
             gh auth login --with-token
-            gh release create v$(date +%Y%m%d%H%M%S) --title "Release $(date +%Y-%m-%d)" --notes "Release notes for $(date +%Y-%m-%d)"
+            COMMIT_MESSAGE=$(git log -1 --pretty=%B)
+            gh release create v$(date +%Y%m%d%H%M%S) --title "[Release $(date +%Y-%m-%d)] $COMMIT_MESSAGE" --notes "Release notes for $(date +%Y-%m-%d)"
           environment:
             GH_TOKEN: $GH_TOKEN
       - run:
