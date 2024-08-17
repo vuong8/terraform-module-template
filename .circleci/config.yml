@@ -47,6 +47,26 @@ jobs:
           name: "Print an env var stored in a Context"
           command: echo ${CONTEXT_ENV_VAR}
 
+  create_release:
+    docker:
+      - image: circleci/python:3.8
+    steps:
+      - checkout
+      - run:
+          name: Install GitHub CLI
+          command: |
+            curl -sL https://github.com/cli/cli/releases/latest/download/gh_$(uname -s)_amd64.deb -o gh.deb
+            sudo dpkg -i gh.deb
+      - run:
+          name: Create Git Release
+          command: |
+            echo "Creating a release"
+            gh auth login --with-token <<< $GH_TOKEN
+            gh release create v$(date +%Y%m%d%H%M%S) --title "Release $(date +%Y-%m-%d)" --notes "Release notes for $(date +%Y-%m-%d)"
+      - run:
+          name: Verify Release
+          command: |
+            gh release view v$(date +%Y%m%d%H%M%S)
 
 # Orchestrate jobs using workflows
 # See: https://circleci.com/docs/workflows/ & https://circleci.com/docs/configuration-reference/#workflows
@@ -59,4 +79,9 @@ workflows:
               branches:
                   only:
                     - main
+                    - release
+      - create_release:
+          filters:
+              branches:
+                  only:
                     - release
