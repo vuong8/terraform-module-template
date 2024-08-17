@@ -125,7 +125,7 @@ jobs:
             }
             EOF
       - run:
-          name: Verify Release s
+          name: Verify Release
           command: |
             curl -H "Authorization: token $GH_TOKEN" \
               -H "Accept: application/vnd.github.v3+json" \
