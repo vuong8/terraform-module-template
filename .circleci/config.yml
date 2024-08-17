@@ -22,7 +22,7 @@ jobs:
           name: "Say hello"
           command: "echo Hello, World! the commit: $GIT_COMMIT_DESC"
           environment:
-              GIT_COMMIT_DESC: git log --format=%B -n 1 $CIRCLE_SHA1
+              GIT_COMMIT_DESC: $(git log --format=oneline -n 1 $CIRCLE_SHA1)
 
 # Orchestrate jobs using workflows
 # See: https://circleci.com/docs/workflows/ & https://circleci.com/docs/configuration-reference/#workflows
