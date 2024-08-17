@@ -20,7 +20,10 @@ jobs:
       - checkout
       - run:
           name: "Say hello"
-          command: "echo Hello, World! the commit: $GIT_COMMIT_DESC"
+          command: |
+              echo "Hello, World!"
+              COMMIT_MESSAGE=$(git log -1 --pretty=%B)
+              echo "Commit Message: $COMMIT_MESSAGE"
           environment:
               GIT_COMMIT_DESC: $(git log --format=oneline -n 1 $CIRCLE_SHA1)
 
