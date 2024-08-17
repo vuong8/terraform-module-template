@@ -134,7 +134,10 @@ workflows:
                   only:
                     - main
                     - release
+      - get_version_and_commit_message
       - create_release:
+          requires:
+            - get_version_and_commit_message
           filters:
               branches:
                   only:
