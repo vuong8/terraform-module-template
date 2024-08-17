@@ -69,7 +69,7 @@ jobs:
           command: |
             # Get the latest version and increment based on commit message
             LATEST_TAG=$(echo $LATEST_TAG | sed 's/^v//')
-            IFS='.' read -r MAJOR MINOR PATCH <<< "$LATEST_TAG"
+            IFS='.' read -r MAJOR MINOR PATCH \<<< "$LATEST_TAG"
 
             if echo "$COMMIT_MESSAGE" | grep -q "\[MAJOR\]"; then
               MAJOR=$((MAJOR + 1))
