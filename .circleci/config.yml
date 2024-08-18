@@ -171,10 +171,7 @@ jobs:
       - checkout
       - run:
           name: Get Latest Tag and Commit Message
-          command: |
-            # Source the environment variables
-            source $BASH_ENV
-            ./scripts/create_release.sh
+          command: ./scripts/create_release.sh
 
 # Orchestrate jobs using workflows
 # See: https://circleci.com/docs/workflows/ & https://circleci.com/docs/configuration-reference/#workflows
