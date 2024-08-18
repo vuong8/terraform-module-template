@@ -41,8 +41,6 @@ NEW_VERSION="v$MAJOR.$MINOR.$PATCH"
 RELEASE_NAME="Release $NEW_VERSION"
 RELEASE_BODY="Release notes for $NEW_VERSION $COMMIT_MESSAGE"
 
-echo "Creating new release $NEW_VERSION"
-
 # Create the release via GitHub API
 curl -X POST \
     -H "Authorization: token $GH_TOKEN" \
