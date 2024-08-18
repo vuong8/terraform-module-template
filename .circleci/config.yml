@@ -47,123 +47,6 @@ jobs:
           name: "Print an env var stored in a Context"
           command: echo ${CONTEXT_ENV_VAR}
 
-  get_version_and_commit_message:
-    docker:
-      - image: circleci/python:3.8
-    steps:
-      - checkout
-      - run:
-          name: Get Latest Version Tag
-          command: |
-            LATEST_TAG=$(git describe --tags --abbrev=0)
-            echo "Latest tag: $LATEST_TAG"
-            echo "LATEST_TAG=$LATEST_TAG" >> $BASH_ENV
-      - run:
-          name: Get Latest Commit Message
-          command: |
-            COMMIT_MESSAGE=$(git log -1 --pretty=%B)
-            echo "Latest commit message: $COMMIT_MESSAGE"
-            echo "COMMIT_MESSAGE=$COMMIT_MESSAGE" >> $BASH_ENV
-      - run:
-          name: Create release tag
-          command: |
-            # Get the latest version and increment based on commit message
-            is_not_number() {
-              echo "$1" | grep -qEv '^[+-]?[0-9]+(\.[0-9]*)?$'
-            }
-            IFS='.' read -r MAJOR MINOR PATCH \<<< "$LATEST_TAG"
-            if is_not_number $MAJOR; then
-              MAJOR=1
-            fi
-            if is_not_number $MINOR; then
-              MINOR=0
-            fi
-            if is_not_number $PATCH; then
-              PATCH=0
-            fi
-
-            if echo "$COMMIT_MESSAGE" | grep -q "\[MAJOR\]"; then
-              MAJOR=$((MAJOR + 1))
-              MINOR=0
-              PATCH=0
-            elif echo "$COMMIT_MESSAGE" | grep -q "\[MINOR\]"; then
-              MINOR=$((MINOR + 1))
-              PATCH=0
-            else
-              PATCH=$((PATCH + 1))
-            fi
-
-            echo "Version: v$MAJOR.$MINOR.$PATCH"
-            echo "NEW_VERSION=v$MAJOR.$MINOR.$PATCH" >> $BASH_ENV
-
-  create_release_bak:
-    docker:
-      - image: circleci/python:3.8
-    steps:
-      - checkout
-      - run:
-          name: Create Git Release
-          command: |
-            is_not_number() {
-              echo "$1" | grep -qEv '^[+-]?[0-9]+(\.[0-9]*)?$'
-            }
-            IFS='.' read -r MAJOR MINOR PATCH \<<< "$LATEST_TAG"
-            if is_not_number $MAJOR; then
-              MAJOR=1
-            fi
-            if is_not_number $MINOR; then
-              MINOR=0
-            fi
-            if is_not_number $PATCH; then
-              PATCH=0
-            fi
-
-            if echo "$COMMIT_MESSAGE" | grep -q "\[MAJOR\]"; then
-              MAJOR=$((MAJOR + 1))
-              MINOR=0
-              PATCH=0
-            elif echo "$COMMIT_MESSAGE" | grep -q "\[MINOR\]"; then
-              MINOR=$((MINOR + 1))
-              PATCH=0
-            else
-              PATCH=$((PATCH + 1))
-            fi
-
-            echo "Version: v$MAJOR.$MINOR.$PATCH"
-            NEW_VERSION=v$MAJOR.$MINOR.$PATCH
-            echo "NEW_VERSION=v$MAJOR.$MINOR.$PATCH" >> $BASH_ENV
-            echo "Creating a release $NEW_VERSION"
-            REPO="vuong8/terraform-module-template"
-            COMMIT_MESSAGE=$(git log -1 --pretty=%B)
-            RELEASE_NAME="Release $NEW_VERSION $(date +%Y-%m-%d) $CIRCLE_SHA1"
-            RELEASE_BODY="Release notes for $NEW_VERSION $(date +%Y-%m-%d) \n $COMMIT_MESSAGE"
-
-            # Create the release via GitHub API
-            curl -X POST \
-              -H "Authorization: token $GH_TOKEN" \
-              -H "Accept: application/vnd.github.v3+json" \
-              -d @- https://api.github.com/repos/$REPO/releases \<<EOF
-            {
-              "tag_name": "$NEW_VERSION",
-              "name": "$RELEASE_NAME",
-              "body": "$RELEASE_BODY",
-              "draft": false,
-              "prerelease": false
-            }
-            EOF
-      - run:
-          name: Verify Release
-          command: |
-            source $BASH_ENV
-            NEW_VERSION="$NEW_VERSION"
-            REPO="vuong8/terraform-module-template"
-            echo "curl -H \"Authorization: token $GH_TOKEN\" \
-              -H \"Accept: application/vnd.github.v3+json\" \
-              https://api.github.com/repos/$REPO/releases/tags/$TAG"
-            curl -H "Authorization: token $GH_TOKEN" \
-              -H "Accept: application/vnd.github.v3+json" \
-              https://api.github.com/repos/$REPO/releases/tags/$TAG
-
   create_release:
     docker:
       - image: circleci/python:3.8
@@ -173,7 +56,7 @@ jobs:
           name: Get Latest Tag and Commit Message
           command: |
               chmod +x ./scripts/*.sh
-              ./scripts/create_release.sh 'vuong8/terraform-module-template'
+              ./scripts/create_release.sh 'vuong8/terraform-module-template' $CIRCLE_BRANCH
 
 # Orchestrate jobs using workflows
 # See: https://circleci.com/docs/workflows/ & https://circleci.com/docs/configuration-reference/#workflows
@@ -187,10 +70,7 @@ workflows:
                   only:
                     - main
                     - release
-      - get_version_and_commit_message
       - create_release:
-          requires:
-            - get_version_and_commit_message
           filters:
               branches:
                   only:

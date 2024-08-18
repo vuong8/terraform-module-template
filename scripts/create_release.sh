@@ -1,6 +1,7 @@
 #! /bin/bash
 
 REPO="$1"  # Replace with your GitHub repository
+BRANCH_NAME="$2"
 
 # Get the latest tag
 LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v1.0.0")
@@ -16,7 +17,7 @@ local pattern='^v([0-9]+)\.([0-9]+)\.([0-9]+)$'
     PATCH=$(echo $LATEST_TAG | sed 's/^v[0-9]*\.[0-9]*\.\([0-9]*\)$/\1/')
 else
     # Set default version if no matched
-    MAJOR=1
+    MAJOR=0
     MINOR=0
     PATCH=0
 fi
@@ -49,6 +50,7 @@ curl -X POST \
     -d @- https://api.github.com/repos/$REPO/releases <<EOF
 {
     "tag_name": "$NEW_VERSION",
+    "target_commitish":"$BRANCH_NAME",
     "name": "$RELEASE_NAME",
     "body": "$RELEASE_BODY",
     "draft": false,
