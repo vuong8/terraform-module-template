@@ -104,7 +104,33 @@ jobs:
       - run:
           name: Create Git Release
           command: |
-            NEW_VERSION="$NEW_VERSION"
+            is_not_number() {
+              echo "$1" | grep -qEv '^[+-]?[0-9]+(\.[0-9]*)?$'
+            }
+            IFS='.' read -r MAJOR MINOR PATCH \<<< "$LATEST_TAG"
+            if is_not_number $MAJOR; then
+              MAJOR=1
+            fi
+            if is_not_number $MINOR; then
+              MINOR=0
+            fi
+            if is_not_number $PATCH; then
+              PATCH=0
+            fi
+
+            if echo "$COMMIT_MESSAGE" | grep -q "\[MAJOR\]"; then
+              MAJOR=$((MAJOR + 1))
+              MINOR=0
+              PATCH=0
+            elif echo "$COMMIT_MESSAGE" | grep -q "\[MINOR\]"; then
+              MINOR=$((MINOR + 1))
+              PATCH=0
+            else
+              PATCH=$((PATCH + 1))
+            fi
+
+            echo "Version: v$MAJOR.$MINOR.$PATCH"
+            NEW_VERSION=v$MAJOR.$MINOR.$PATCH
             echo "Creating a release $NEW_VERSION"
             REPO="vuong8/terraform-module-template"
             COMMIT_MESSAGE=$(git log -1 --pretty=%B)
