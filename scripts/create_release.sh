@@ -2,6 +2,7 @@
 
 REPO="$1"  # Github orgID/repositoryID
 BRANCH_NAME="$2" # Github branch name
+PRE_RELEASE=false
 
 # Get the latest tag
 LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
@@ -33,12 +34,13 @@ elif echo "$COMMIT_MESSAGE" | grep -q "\[MINOR\]"; then
 else
     PATCH=$((PATCH + 1))
 fi
-
 # Alpla and beta version
 if echo "$COMMIT_MESSAGE" | grep -q "\[BETA\]"; then
     PATCH="$PATCH-beta"
+    PRE_RELEASE=true
 elif echo "$COMMIT_MESSAGE" | grep -q "\[ALPHA\]"; then
     PATCH="$PATCH-alpla"
+    PRE_RELEASE=true
 fi
 
 # Construct the new version tag
@@ -59,7 +61,7 @@ curl -X POST \
     "name": "$RELEASE_NAME",
     "body": "$RELEASE_BODY",
     "draft": false,
-    "prerelease": false
+    "prerelease": $PRE_RELEASE
 }
 EOF
 
