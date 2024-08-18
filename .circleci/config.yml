@@ -171,7 +171,9 @@ jobs:
       - checkout
       - run:
           name: Get Latest Tag and Commit Message
-          command: ./scripts/create_release.sh
+          command: |
+              chmod +x ./scripts/*.sh
+              ./scripts/create_release.sh
 
 # Orchestrate jobs using workflows
 # See: https://circleci.com/docs/workflows/ & https://circleci.com/docs/configuration-reference/#workflows
