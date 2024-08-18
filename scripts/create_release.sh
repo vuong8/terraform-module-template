@@ -7,16 +7,18 @@ LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
 # Get the latest commit message
 COMMIT_MESSAGE=$(git log -1 --pretty=%B)
 
+local pattern='^v([0-9]+)\.([0-9]+)\.([0-9]+)$'
 # Check and reset LATEST_TAG if necessary
-if [[ ! "$LATEST_TAG" =~ ^v([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
-    MAJOR=1
-    MINOR=0
-    PATCH=0
-else
+ if [[ "$version" =~ $pattern ]]; then
     # Extract version components
     MAJOR=$(echo $LATEST_TAG | sed 's/^v\([0-9]*\)\.[0-9]*\.[0-9]*$/\1/')
     MINOR=$(echo $LATEST_TAG | sed 's/^v[0-9]*\.\([0-9]*\)\.[0-9]*$/\1/')
     PATCH=$(echo $LATEST_TAG | sed 's/^v[0-9]*\.[0-9]*\.\([0-9]*\)$/\1/')
+else
+    # Set default version
+    MAJOR=1
+    MINOR=0
+    PATCH=0
 fi
 
 # Increment version based on commit message
