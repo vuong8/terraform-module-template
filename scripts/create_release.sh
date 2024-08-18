@@ -1,6 +1,6 @@
 #! /bin/bash
 
-REPO="$1"  # Github orgID/repositoryID
+REPO="$1"  # Github OrgID/RepositoryID
 BRANCH_NAME="$2" # Github branch name
 PRE_RELEASE=false
 
