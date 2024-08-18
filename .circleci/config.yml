@@ -71,7 +71,7 @@ jobs:
             is_not_number() {
               echo "$1" | grep -qEv '^[+-]?[0-9]+(\.[0-9]*)?$'
             }
-            IFS='.' read -r MAJOR MINOR PATCH <<< "$LATEST_TAG"
+            IFS='.' read -r MAJOR MINOR PATCH \<<< "$LATEST_TAG"
             if is_not_number $MAJOR; then
               MAJOR=1
             fi
