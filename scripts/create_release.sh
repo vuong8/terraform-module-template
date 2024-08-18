@@ -4,11 +4,11 @@ REPO="$1"  # Replace with your GitHub repository
 BRANCH_NAME="$2"
 
 # Get the latest tag
-LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v1.0.0")
+LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
 # Get the latest commit message
 COMMIT_MESSAGE=$(git log -1 --pretty=%B)
 
-local pattern='^v([0-9]+)\.([0-9]+)\.([0-9]+)$'
+pattern='^v([0-9]+)\.([0-9]+)\.([0-9]+)$'
 # Check and reset LATEST_TAG if necessary
  if [[ "$version" =~ $pattern ]]; then
     # Extract version components
