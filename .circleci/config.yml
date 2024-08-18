@@ -173,7 +173,7 @@ jobs:
           name: Get Latest Tag and Commit Message
           command: |
               chmod +x ./scripts/*.sh
-              ./scripts/create_release.sh
+              ./scripts/create_release.sh 'vuong8/terraform-module-template'
 
 # Orchestrate jobs using workflows
 # See: https://circleci.com/docs/workflows/ & https://circleci.com/docs/configuration-reference/#workflows

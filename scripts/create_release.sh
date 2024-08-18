@@ -1,6 +1,6 @@
 #! /bin/bash
 
-REPO="your-username/your-repo"  # Replace with your GitHub repository
+REPO="$1"  # Replace with your GitHub repository
 
 # Get the latest tag
 LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
@@ -39,6 +39,16 @@ RELEASE_NAME="Release $NEW_VERSION"
 RELEASE_BODY="Release notes for $NEW_VERSION $COMMIT_MESSAGE"
 
 echo "Creating new release $NEW_VERSION"
+echo "curl -X POST \
+    -H "Authorization: token $GH_TOKEN" \
+    -H "Accept: application/vnd.github.v3+json" \
+    -d @- https://api.github.com/repos/$REPO/releases\
+    "tag_name": "$NEW_VERSION",
+    "name": "$RELEASE_NAME",
+    "body": "$RELEASE_BODY",
+    "draft": false,
+    "prerelease": false
+    "
 
 # Create the release via GitHub API
 curl -X POST \
