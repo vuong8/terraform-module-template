@@ -53,7 +53,7 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Get Latest Tag and Commit Message
+          name: Create release
           command: |
               chmod +x ./scripts/*.sh
               ./scripts/create_release.sh 'vuong8/terraform-module-template' $CIRCLE_BRANCH
