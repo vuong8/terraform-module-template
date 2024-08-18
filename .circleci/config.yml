@@ -94,7 +94,7 @@ jobs:
             fi
 
             echo "Version: $MAJOR.$MINOR.$PATCH"
-            echo "NEW_VERSION=$$MAJOR.$MINOR.$PATCH" >> $BASH_ENV
+            echo "NEW_VERSION=v$MAJOR.$MINOR.$PATCH" >> $BASH_ENV
 
   create_release:
     docker:
