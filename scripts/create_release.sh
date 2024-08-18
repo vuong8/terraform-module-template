@@ -21,7 +21,7 @@ else
     MINOR=0
     PATCH=0
 fi
-
+echo "before increase $MAJOR.$MINOR.$PATCH"
 # Increment version based on commit message
 if echo "$COMMIT_MESSAGE" | grep -q "\[MAJOR\]"; then
     MAJOR=$((MAJOR + 1))
