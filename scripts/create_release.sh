@@ -34,7 +34,8 @@ elif echo "$COMMIT_MESSAGE" | grep -q "\[MINOR\]"; then
 else
     PATCH=$((PATCH + 1))
 fi
-# Alpla and beta version
+
+# Alpla and Beta version
 if echo "$COMMIT_MESSAGE" | grep -q "\[BETA\]"; then
     PATCH="$PATCH-beta"
     PRE_RELEASE=true
