@@ -131,6 +131,7 @@ jobs:
 
             echo "Version: v$MAJOR.$MINOR.$PATCH"
             NEW_VERSION=v$MAJOR.$MINOR.$PATCH
+            echo "NEW_VERSION=v$MAJOR.$MINOR.$PATCH" >> $BASH_ENV
             echo "Creating a release $NEW_VERSION"
             REPO="vuong8/terraform-module-template"
             COMMIT_MESSAGE=$(git log -1 --pretty=%B)
@@ -155,6 +156,9 @@ jobs:
           command: |
             NEW_VERSION="$NEW_VERSION"
             REPO="vuong8/terraform-module-template"
+            echo "curl -H \"Authorization: token $GH_TOKEN\" \
+              -H \"Accept: application/vnd.github.v3+json\" \
+              https://api.github.com/repos/$REPO/releases/tags/$TAG"
             curl -H "Authorization: token $GH_TOKEN" \
               -H "Accept: application/vnd.github.v3+json" \
               https://api.github.com/repos/$REPO/releases/tags/$TAG
