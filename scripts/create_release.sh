@@ -15,7 +15,7 @@ local pattern='^v([0-9]+)\.([0-9]+)\.([0-9]+)$'
     MINOR=$(echo $LATEST_TAG | sed 's/^v[0-9]*\.\([0-9]*\)\.[0-9]*$/\1/')
     PATCH=$(echo $LATEST_TAG | sed 's/^v[0-9]*\.[0-9]*\.\([0-9]*\)$/\1/')
 else
-    # Set default version
+    # Set default version if no matched
     MAJOR=1
     MINOR=0
     PATCH=0
