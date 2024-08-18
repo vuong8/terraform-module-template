@@ -96,7 +96,7 @@ jobs:
             echo "Version: v$MAJOR.$MINOR.$PATCH"
             echo "NEW_VERSION=v$MAJOR.$MINOR.$PATCH" >> $BASH_ENV
 
-  create_release:
+  create_release_bak:
     docker:
       - image: circleci/python:3.8
     steps:
@@ -163,6 +163,18 @@ jobs:
             curl -H "Authorization: token $GH_TOKEN" \
               -H "Accept: application/vnd.github.v3+json" \
               https://api.github.com/repos/$REPO/releases/tags/$TAG
+
+  create_release:
+    docker:
+      - image: circleci/python:3.8
+    steps:
+      - checkout
+      - run:
+          name: Get Latest Tag and Commit Message
+          command: |
+            # Source the environment variables
+            source $BASH_ENV
+            ./scripts/create_release.sh
 
 
 # Orchestrate jobs using workflows
