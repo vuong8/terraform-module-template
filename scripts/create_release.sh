@@ -32,6 +32,11 @@ elif echo "$COMMIT_MESSAGE" | grep -q "\[MINOR\]"; then
     PATCH=0
 else
     PATCH=$((PATCH + 1))
+    if echo "$COMMIT_MESSAGE" | grep -q "\[BETA\]"; then
+        PATCH="$PATCH-beta"
+    elif echo "$COMMIT_MESSAGE" | grep -q "\[ALPHA\]"; then
+        PATCH="$PATCH-alpla"
+    fi
 fi
 
 # Construct the new version tag
