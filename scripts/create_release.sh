@@ -8,9 +8,9 @@ LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
 # Get the latest commit message
 COMMIT_MESSAGE=$(git log -1 --pretty=%B)
 
-pattern='^v([0-9]+)\.([0-9]+)\.([0-9]+)$'
+pattern="^v[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9]+)?$"
 # Check and reset LATEST_TAG if necessary
- if [[ "$version" =~ $pattern ]]; then
+if [[ "$LATEST_TAG" =~ $pattern ]]; then
     # Extract version components
     MAJOR=$(echo $LATEST_TAG | sed 's/^v\([0-9]*\)\.[0-9]*\.[0-9]*$/\1/')
     MINOR=$(echo $LATEST_TAG | sed 's/^v[0-9]*\.\([0-9]*\)\.[0-9]*$/\1/')
