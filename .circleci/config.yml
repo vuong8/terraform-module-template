@@ -154,6 +154,7 @@ jobs:
       - run:
           name: Verify Release
           command: |
+            source $BASH_ENV
             NEW_VERSION="$NEW_VERSION"
             REPO="vuong8/terraform-module-template"
             echo "curl -H \"Authorization: token $GH_TOKEN\" \
