@@ -1,7 +1,7 @@
 #! /bin/bash
 
-REPO="$1"  # Replace with your GitHub repository
-BRANCH_NAME="$2"
+REPO="$1"  # Github orgID/repositoryID
+BRANCH_NAME="$2" # Github branch name
 
 # Get the latest tag
 LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
@@ -12,16 +12,16 @@ pattern="^v[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9]+)?$"
 # Check and reset LATEST_TAG if necessary
 if [[ "$LATEST_TAG" =~ $pattern ]]; then
     # Extract version components
-    MAJOR=$(echo $LATEST_TAG | sed 's/^v\([0-9]*\)\.[0-9]*\.[0-9]*$/\1/')
-    MINOR=$(echo $LATEST_TAG | sed 's/^v[0-9]*\.\([0-9]*\)\.[0-9]*$/\1/')
-    PATCH=$(echo $LATEST_TAG | sed 's/^v[0-9]*\.[0-9]*\.\([0-9]*\)$/\1/')
+    MAJOR=$(echo $LATEST_TAG | sed 's/^v\([0-9]*\)\.[0-9]*\.[0-9].*$/\1/')
+    MINOR=$(echo $LATEST_TAG | sed 's/^v[0-9]*\.\([0-9]*\)\.[0-9].*$/\1/')
+    PATCH=$(echo $LATEST_TAG | sed 's/^v[0-9]*\.[0-9]*\.\([0-9]*\).*$/\1/')
 else
-    # Set default version if no matched
+    # Set default version if not matched
     MAJOR=0
     MINOR=0
     PATCH=0
 fi
-echo "before increase $MAJOR.$MINOR.$PATCH"
+
 # Increment version based on commit message
 if echo "$COMMIT_MESSAGE" | grep -q "\[MAJOR\]"; then
     MAJOR=$((MAJOR + 1))
