@@ -93,7 +93,7 @@ jobs:
               PATCH=$((PATCH + 1))
             fi
 
-            echo "Version: $MAJOR.$MINOR.$PATCH"
+            echo "Version: v$MAJOR.$MINOR.$PATCH"
             echo "NEW_VERSION=v$MAJOR.$MINOR.$PATCH" >> $BASH_ENV
 
   create_release:
@@ -104,11 +104,11 @@ jobs:
       - run:
           name: Create Git Release
           command: |
-            echo "Creating a release"
+            echo "Creating a release $NEW_VERSION"
             REPO="vuong8/terraform-module-template"
             COMMIT_MESSAGE=$(git log -1 --pretty=%B)
-            RELEASE_NAME="Release $(date +%Y-%m-%d) $CIRCLE_SHA1"
-            RELEASE_BODY="Release notes for $(date +%Y-%m-%d) \n $COMMIT_MESSAGE"
+            RELEASE_NAME="Release $NEW_VERSION $(date +%Y-%m-%d) $CIRCLE_SHA1"
+            RELEASE_BODY="Release notes for $NEW_VERSION $(date +%Y-%m-%d) \n $COMMIT_MESSAGE"
 
             # Create the release via GitHub API
             curl -X POST \
