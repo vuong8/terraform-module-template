@@ -104,6 +104,7 @@ jobs:
       - run:
           name: Create Git Release
           command: |
+            NEW_VERSION="$NEW_VERSION"
             echo "Creating a release $NEW_VERSION"
             REPO="vuong8/terraform-module-template"
             COMMIT_MESSAGE=$(git log -1 --pretty=%B)
@@ -126,6 +127,7 @@ jobs:
       - run:
           name: Verify Release
           command: |
+            NEW_VERSION="$NEW_VERSION"
             REPO="vuong8/terraform-module-template"
             curl -H "Authorization: token $GH_TOKEN" \
               -H "Accept: application/vnd.github.v3+json" \
